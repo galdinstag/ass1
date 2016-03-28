@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class SequenceAlignment {
     ArrayList<String> sequences;
     TransitionMatrix matrix;
+    int a;
+    int b;
 
 
 
@@ -32,14 +34,27 @@ public class SequenceAlignment {
             BufferedReader bf = new BufferedReader(new FileReader(orgMatrix));
             BufferedWriter writer = new BufferedWriter(new FileWriter("mid.txt"));
             String line = bf.readLine();
-            while(line != null){
-                if(!line.contains("#") && !line.contains("A 10") && !line.contains("B 2")){
-                    writer.write(line);
-                    writer.write("\n");
-                    writer.flush();
-                }
+            while((line != null) && line.contains("#")){    //dont read lines with #
                 line = bf.readLine();
             }
+            while((line != null) && (!line.contains("#"))){ //read matrix
+                writer.write(line);
+                writer.write("\n");
+                writer.flush();
+                line = bf.readLine();
+            }
+            while((line != null) && line.contains("#")){ //dont read lines with #
+                line = bf.readLine();
+            }
+            //read A for: W(x) = Ax + B
+            String num = line.substring(2);
+            a = Integer.parseInt(num.toString());
+
+            //read B for: W(x) = Ax + B
+            line = bf.readLine();
+            num = line.substring(2);
+            b = Integer.parseInt(num.toString());
+
             writer.close();
             return new File("mid.txt");
         } catch (FileNotFoundException e) {

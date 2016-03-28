@@ -8,6 +8,5 @@ public class main {
     public static void main(String [] args) throws Exception
     {
        SequenceAlignment seq = new SequenceAlignment(args[0],args[1]);
-        int a=6;
     }
 }
