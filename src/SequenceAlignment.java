@@ -77,6 +77,8 @@ public class SequenceAlignment {
             M[i][0].setScore(0);
         for (int j = 0; j <= sequenceB.length(); j++)
             M[0][j].setScore(0);
+        //MatrixPrint(M);
+        //System.out.println();
 
         //mainloop:
         //full matrix with scores and pies
@@ -112,15 +114,17 @@ public class SequenceAlignment {
         // get best score path
 
         //CHECK
-       // MatrixPrint(M);
+        //MatrixPrint(M);
 
 
     }
 
 //    private void MatrixPrint(cellMatrix[][] m) {
-//        for (int i = 0; i <= m.length(); i++)
-//            for (int j = 0; j<=m[i].length; j++ )
-//
+//        for (int i = 0; i <= m.length; i++) {
+//            for (int j = 0; j <= m[i].length; j++)
+//                System.out.print(m[i][j]+" ");
+//        }
+//        System.out.println();
 //    }
 
 
