@@ -60,6 +60,60 @@ public class SequenceAlignment {
         return null;
     }
 
+    //run global alignment on two strings
+    //return the score of the highest rank + the path
+    public void globalAlignment(String sequenceA, String sequenceB) {
+        cellMatrix[][] M = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
+        //init new cells in matrix
+        for (int i = 0; i <= sequenceA.length(); i++)
+            for (int j = 0; j <= sequenceB.length(); j++)
+                M[i][j] = new cellMatrix();
+
+        //init zero in the left and up
+        for (int i = 0; i <= sequenceA.length(); i++)
+            M[i][0].setScore(0);
+        for (int j = 0; j <= sequenceB.length(); j++)
+            M[0][j].setScore(0);
+
+        //mainloop:
+        //full matrix with scores and pies
+        for (int i = 1; i <= sequenceA.length(); i++) {
+            for (int j = 1; j <= sequenceB.length(); j++) {
+                double maxScore = Math.max(Math.max(M[i-1][j-1].getScore(), M[i-1][j].getScore()) , M[i][j-1].getScore());
+                M[i][j].setScore(maxScore);
+                if(maxScore == M[i-1][j-1].getScore())
+                    M[i][j].setPi(M[i-1][j-1]);
+                else if(maxScore == M[i-1][j].getScore())
+                    M[i][j].setPi(M[i-1][j]);
+                else M[i][j].setPi(M[i][j-1]);
+            }
+        }
+
+        //get the end of path cell
+        double maxScore = 0;
+        int maxi;
+        int maxj;
+        for (int i = 1; i <= sequenceA.length(); i++)
+            if (i >= maxScore){
+                maxScore = i;
+                maxi = i;
+                maxj = 0;
+            }
+        for (int j = 1; j <= sequenceB.length(); j++)
+            if (j >= maxScore){
+                maxScore = j;
+                maxi = 0;
+                maxj = j;
+            }
+
+        // get best score path
+
+        //CHECK
+        System.out.println(M);
+
+
+    }
+
     //run local alignment on two strings
     //return the score of the two highest ranks + the path
     public void localAlignment(String sequenceA, String sequenceB) {
