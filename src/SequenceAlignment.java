@@ -52,7 +52,7 @@ public class SequenceAlignment {
             line = bf.readLine();
             num = line.substring(2);
             b = Integer.parseInt(num);
-            
+
             writer.close();
             return new File("mid.txt");
         } catch (FileNotFoundException e) {
@@ -69,8 +69,9 @@ public class SequenceAlignment {
         cellMatrix[][] M = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
         //init new cells in matrix
         for (int i = 0; i <= sequenceA.length(); i++)
-            for (int j = 0; i<sequenceB.length(); j++)
+            for (int j = 0; j <= sequenceB.length(); j++)
                 M[i][j] = new cellMatrix();
+
         //init zero in the left and up
         for (int i = 0; i <= sequenceA.length(); i++)
             M[i][0].setScore(0);
@@ -110,9 +111,17 @@ public class SequenceAlignment {
 
         // get best score path
 
+        //CHECK
+       // MatrixPrint(M);
 
 
     }
+
+//    private void MatrixPrint(cellMatrix[][] m) {
+//        for (int i = 0; i <= m.length(); i++)
+//            for (int j = 0; j<=m[i].length; j++ )
+//
+//    }
 
 
     //run local alignment on two strings
