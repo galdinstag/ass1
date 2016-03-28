@@ -12,46 +12,43 @@ public class SequenceAlignment {
     int b;
 
 
-    public SequenceAlignment(String fasteFile, String matrixFile) {
+
+    public SequenceAlignment(String fasteFile,String matrixFile){
         sequences = new ArrayList<>();
         FastaSequence reader = new FastaSequence(fasteFile);
-        for (int i = 0; i < reader.size(); i++) {
+        for (int i=0; i< reader.size(); i++)
+        {
             sequences.add(reader.getSequence(i));
         }
-        matrix = new TransitionMatrix(fixMatrix(matrixFile));
-        new File("mid.txt").delete();
+            matrix = new TransitionMatrix(fixMatrix(matrixFile));
+            new File("mid.txt").delete();
     }
 
-    public void GlobalAlignment() {
-
-
-    }
-
-    public File fixMatrix(String orgMatrix) {
+    public File fixMatrix(String orgMatrix){
         try {
             BufferedReader bf = new BufferedReader(new FileReader(orgMatrix));
             BufferedWriter writer = new BufferedWriter(new FileWriter("mid.txt"));
             String line = bf.readLine();
-            while ((line != null) && line.contains("#")) {    //dont read lines with #
+            while((line != null) && line.contains("#")){    //dont read lines with #
                 line = bf.readLine();
             }
-            while ((line != null) && (!line.contains("#"))) { //read matrix
+            while((line != null) && (!line.contains("#"))){ //read matrix
                 writer.write(line);
                 writer.write("\n");
                 writer.flush();
                 line = bf.readLine();
             }
-            while ((line != null) && line.contains("#")) { //dont read lines with #
+            while((line != null) && line.contains("#")){ //dont read lines with #
                 line = bf.readLine();
             }
             //read A for: W(x) = Ax + B
             String num = line.substring(2);
-            a = Integer.parseInt(num);
+            a = Integer.parseInt(num.toString());
 
             //read B for: W(x) = Ax + B
             line = bf.readLine();
             num = line.substring(2);
-            b = Integer.parseInt(num);
+            b = Integer.parseInt(num.toString());
 
             writer.close();
             return new File("mid.txt");
@@ -77,8 +74,6 @@ public class SequenceAlignment {
             M[i][0].setScore(0);
         for (int j = 0; j <= sequenceB.length(); j++)
             M[0][j].setScore(0);
-        //MatrixPrint(M);
-        //System.out.println();
 
         //mainloop:
         //full matrix with scores and pies
@@ -90,7 +85,7 @@ public class SequenceAlignment {
                     M[i][j].setPi(M[i-1][j-1]);
                 else if(maxScore == M[i-1][j].getScore())
                     M[i][j].setPi(M[i-1][j]);
-                    else M[i][j].setPi(M[i][j-1]);
+                else M[i][j].setPi(M[i][j-1]);
             }
         }
 
@@ -114,33 +109,21 @@ public class SequenceAlignment {
         // get best score path
 
         //CHECK
-        //MatrixPrint(M);
+        System.out.println(M);
 
 
     }
 
-//    private void MatrixPrint(cellMatrix[][] m) {
-//        for (int i = 0; i <= m.length; i++) {
-//            for (int j = 0; j <= m[i].length; j++)
-//                System.out.print(m[i][j]+" ");
-//        }
-//        System.out.println();
-//    }
-
-
     //run local alignment on two strings
-    //return the score of the two highest ranks + the paths
+    //return the score of the two highest ranks + the path
     public void localAlignment(String sequenceA, String sequenceB) {
-        cellMatrix[][] M = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
-        double highestScore;
-        //initialization
-
+        cellMatrix[][] M = new cellMatrix[sequenceA.length()+1][sequenceB.length()+1];
         for (int i = 0; i <= sequenceA.length(); i++) {
-            M[i][0].setScore(0);
+            for (int j = 0; j <= sequenceB.length(); j++) {
+                M[i][j] = new cellMatrix();
+            }
         }
-        for (int j = 0; j <= sequenceB.length(); j++) {
-            M[0][j].setScore(0);
-        }
+        double highestScore;
 
         //main loop
         for (int i = 1; i <= sequenceA.length(); i++) {
@@ -163,34 +146,82 @@ public class SequenceAlignment {
             }
         }
         //search the matrix for the 2 largest scores, return them and the paths.
-        //TODO: 2 best with same score!
         double best = 0;
-        cellMatrix bestCeller = null;
+        int iBestCeller = 0;
+        int jBestCeller = 0;
         double secondBest = 0;
-        cellMatrix secondBestCeller = null;
-        for (int i = 1; i <= sequenceA.length(); i++) {
+        int iSecondBestCeller = 0;
+        int jSecondBestCeller = 0;
+        for(int i = 1; i <= sequenceA.length(); i++) {
             for (int j = 1; j <= sequenceB.length(); j++) {
                 //second best score so far
-                if (M[i][j].getScore() > secondBest) {
+                if (M[i][j].getScore() >= secondBest) {
                     secondBest = M[i][j].getScore();
-                    secondBestCeller = M[i][j];
+                    iSecondBestCeller = i;
+                    jSecondBestCeller = j;
                 }
                 //best so far, swap best and second best
                 if (M[i][j].getScore() > best) {
                     secondBest = best;
-                    secondBestCeller = bestCeller;
+                    iSecondBestCeller = iBestCeller;
+                    jSecondBestCeller = jBestCeller;
                     best = M[i][j].getScore();
-                    bestCeller = M[i][j];
+                    iBestCeller = i;
+                    jBestCeller = j;
                 }
             }
         }
-        //print best path
-        if (bestCeller != null) {
-            cellMatrix currCell = bestCeller;
-            while (currCell != null) {
-                //current pi is M[i-1][j-1]
-                //if(currCell.getPI() == M)
+        findPath(iBestCeller,jBestCeller,M,sequenceA,sequenceB);
+    }
+
+    private void findPath(int i, int j, cellMatrix[][] M, String sequenceA, String sequenceB) {
+        System.out.println(matrix.score('A','*'));
+        System.out.println(i);
+        System.out.println(j);
+        for(int t = 0; t < M.length; t++){
+            System.out.println();
+            for(int k = 0; k < M[0].length; k++ ){
+                System.out.print(M[t][k].getScore() + " ");
             }
+        }
+        System.out.println();
+        //at least one of i,j should be not-zero otherwise M[0][0] =
+        StringBuilder first = new StringBuilder();
+        StringBuilder second = new StringBuilder();
+        if(i != 0 && j != 0){
+            //initialize last cell
+            cellMatrix currCell = M[i][j];
+            while(currCell != null){
+                //where did i came from?
+                if(i > 0 && j > 0) {
+                    //replace
+                    if (M[i][j].getPI() == M[i - 1][j - 1]) {
+                        first.append(sequenceA.charAt(i - 1));
+                        second.append(sequenceB.charAt(j - 1));
+                        i--;
+                        j--;
+                    }
+                }
+                if(i > 0) {
+                    //delete
+                    if (M[i][j].getScore() == (M[i - 1][j].getScore() + matrix.score(sequenceA.charAt(i - 1), '*'))) {
+                        first.append(sequenceA.charAt(i - 1));
+                        second.append("_");
+                        i--;
+                    }
+                }
+                if(j > 0) {
+                    //insert
+                    {
+                        first.append("_");
+                        second.append(sequenceB.charAt(j - 1));
+                        j--;
+                    }
+                }
+                currCell = currCell.getPI();
+            }
+            System.out.println(first.reverse());
+            System.out.println(second.reverse());
         }
     }
 }
