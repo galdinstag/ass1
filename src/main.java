@@ -8,6 +8,6 @@ public class main {
     public static void main(String [] args) throws Exception
     {
        SequenceAlignment seq = new SequenceAlignment(args[0],args[1]);
-        seq.globalAlignment("AAAA","ATAA");
+        //seq.globalAlignment(seq.sequences.get(0),seq.sequences.get(1));
     }
 }

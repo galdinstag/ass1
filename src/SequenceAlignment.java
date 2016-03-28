@@ -81,16 +81,22 @@ public class SequenceAlignment {
         //full matrix with scores and pies
         for (int i = 1; i <= sequenceA.length(); i++) {
             for (int j = 1; j <= sequenceB.length(); j++) {
-                double maxScore = Math.max(M[i-1][j-1].getScore() + matrix.score(sequenceA.charAt(i-1),sequenceB.charAt(j-1)),Math.max(M[i-1][j].getScore() + matrix.score(sequenceA.charAt(i-1), '*'),M[i][j-1].getScore() + matrix.score('*',sequenceB.charAt(j-1))));
-                M[i][j].setScore(maxScore);
-                if(maxScore == M[i-1][j-1].getScore())
-                    M[i][j].setPi(M[i-1][j-1]);
-                else if(maxScore == M[i-1][j].getScore())
-                    M[i][j].setPi(M[i-1][j]);
-                else M[i][j].setPi(M[i][j-1]);
+                    double maxScore = M[i - 1][j - 1].getScore() + matrix.score(sequenceA.charAt(i - 1), sequenceB.charAt(j - 1));
+                    M[i][j].setScore(maxScore);
+                    M[i][j].setPi(M[i - 1][j - 1]);
+
+                if (M[i - 1][j].getScore() + matrix.score(sequenceA.charAt(i - 1), '*') > maxScore) {
+                    maxScore = M[i - 1][j].getScore() + matrix.score(sequenceA.charAt(i - 1), '*');
+                    M[i][j].setScore(maxScore);
+                    M[i][j].setPi(M[i - 1][j]);
+                }
+                if (M[i][j - 1].getScore() + matrix.score(sequenceB.charAt(j - 1), '*') > maxScore) {
+                    maxScore =M[i][j - 1].getScore() + matrix.score(sequenceB.charAt(j - 1), '*');
+                    M[i][j].setScore(maxScore);
+                    M[i][j].setPi(M[i][j - 1]);
+                }
             }
         }
-
         //get the end of path cell
         double maxScore = 0;
 
