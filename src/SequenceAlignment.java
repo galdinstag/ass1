@@ -181,13 +181,6 @@ public class SequenceAlignment {
     }
 
     private void findPath(int i, int j, cellMatrix[][] M, String sequenceA, String sequenceB) {
-        for(int t = 0; t < M.length; t++){
-            System.out.println();
-            for(int k = 0; k < M[0].length; k++ ){
-                System.out.print(M[t][k].getScore() + " ");
-            }
-        }
-        System.out.println();
         //at least one of i,j should be not-zero otherwise M[0][0] =
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
@@ -197,7 +190,6 @@ public class SequenceAlignment {
             cellMatrix currCell = M[i][j];
             while(currCell != null){
                 found = false;
-                System.out.println(i + " " + j + " " + M[i][j].getScore());
                 //where did i came from?
                 if(i > 0 && j > 0) {
                     //replace
