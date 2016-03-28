@@ -23,7 +23,7 @@ public class SequenceAlignment {
             matrix = new TransitionMatrix(fixMatrix(matrixFile));
             new File("mid.txt").delete();
     }
-    
+
     public File fixMatrix(String orgMatrix){
         try {
             BufferedReader bf = new BufferedReader(new FileReader(orgMatrix));
