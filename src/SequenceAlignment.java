@@ -104,20 +104,18 @@ public class SequenceAlignment {
             if (M[i][sequenceA.length()].getScore() >= maxScore){
                 maxScore = i;
                 maxi = i;
-                maxj = sequenceA.length();
+                maxj = sequenceB.length();
             }
         for (int j = 1; j <= sequenceB.length(); j++)
             if (M[sequenceA.length()][j].getScore() >= maxScore){
                 maxScore = j;
-                maxi = sequenceB.length();
+                maxi = sequenceA.length();
                 maxj = j;
             }
 
         // get best score path
-
-        //CHECK
-        System.out.println("here:iandj "+maxi+" "+maxj);
         findPath(maxi, maxj, M, sequenceA, sequenceB);
+
     }
 
     //run local alignment on two strings
@@ -187,6 +185,7 @@ public class SequenceAlignment {
         boolean found;
         if(i != 0 && j != 0){
             //initialize last cell
+            System.out.println(i+" "+j+" "+ sequenceA.length()+" "+sequenceB.length());
             cellMatrix currCell = M[i][j];
             while(currCell != null){
                 found = false;
