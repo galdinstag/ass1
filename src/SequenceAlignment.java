@@ -63,6 +63,8 @@ public class SequenceAlignment {
     //run global alignment on two strings
     //return the score of the highest rank + the path
     public void globalAlignment(String sequenceA, String sequenceB) {
+        int maxi = 0;
+        int maxj = 0;
         cellMatrix[][] M = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
         //init new cells in matrix
         for (int i = 0; i <= sequenceA.length(); i++)
@@ -79,7 +81,7 @@ public class SequenceAlignment {
         //full matrix with scores and pies
         for (int i = 1; i <= sequenceA.length(); i++) {
             for (int j = 1; j <= sequenceB.length(); j++) {
-                double maxScore = Math.max(Math.max(M[i-1][j-1].getScore(), M[i-1][j].getScore()) , M[i][j-1].getScore());
+                double maxScore = Math.max(M[i-1][j-1].getScore() + matrix.score(sequenceA.charAt(i-1),sequenceB.charAt(j-1)),Math.max(M[i-1][j].getScore() + matrix.score(sequenceA.charAt(i-1), '*'),M[i][j-1].getScore() + matrix.score('*',sequenceB.charAt(j-1))));
                 M[i][j].setScore(maxScore);
                 if(maxScore == M[i-1][j-1].getScore())
                     M[i][j].setPi(M[i-1][j-1]);
@@ -91,27 +93,25 @@ public class SequenceAlignment {
 
         //get the end of path cell
         double maxScore = 0;
-        int maxi;
-        int maxj;
+
         for (int i = 1; i <= sequenceA.length(); i++)
-            if (i >= maxScore){
+            if (M[i][sequenceA.length()].getScore() >= maxScore){
                 maxScore = i;
                 maxi = i;
-                maxj = 0;
+                maxj = sequenceA.length();
             }
         for (int j = 1; j <= sequenceB.length(); j++)
-            if (j >= maxScore){
+            if (M[sequenceA.length()][j].getScore() >= maxScore){
                 maxScore = j;
-                maxi = 0;
+                maxi = sequenceB.length();
                 maxj = j;
             }
 
         // get best score path
 
         //CHECK
-        System.out.println(M);
-
-
+        System.out.println("here:iandj "+maxi+" "+maxj);
+        findPath(maxi, maxj, M, sequenceA, sequenceB);
     }
 
     //run local alignment on two strings
