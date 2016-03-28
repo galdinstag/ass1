@@ -3,18 +3,18 @@
  */
 public class cellMatrix {
     private cellMatrix pi;
-    private double score;
+    private int score;
 
     public cellMatrix(){
         pi = null;
         score = 0;
     }
 
-    public void setScore(double score) {
+    public void setScore(int score) {
         this.score = score;
     }
 
-    public double getScore() {
+    public int getScore() {
         return score;
     }
 

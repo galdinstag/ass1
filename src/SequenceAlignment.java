@@ -81,7 +81,7 @@ public class SequenceAlignment {
         //full the matrix with scores and pies
         for (int i = 1; i <= sequenceA.length(); i++) {
             for (int j = 1; j <= sequenceB.length(); j++) {
-                    double maxScore = M[i - 1][j - 1].getScore() + matrix.score(sequenceA.charAt(i - 1), sequenceB.charAt(j - 1));
+                    int maxScore = M[i - 1][j - 1].getScore() + matrix.score(sequenceA.charAt(i - 1), sequenceB.charAt(j - 1));
                     M[i][j].setScore(maxScore);
                     M[i][j].setPi(M[i - 1][j - 1]);
 
@@ -98,7 +98,7 @@ public class SequenceAlignment {
             }
         }
         //get the end of path cell
-        double maxScore = M[sequenceA.length()][sequenceB.length()].getScore();
+        int maxScore = M[sequenceA.length()][sequenceB.length()].getScore();
 
         for (int i = 1; i <= sequenceA.length(); i++)
             if (M[i][sequenceB.length()].getScore() >= maxScore){
@@ -127,7 +127,7 @@ public class SequenceAlignment {
                 M[i][j] = new cellMatrix();
             }
         }
-        double highestScore;
+        int highestScore;
 
         //main loop
         for (int i = 1; i <= sequenceA.length(); i++) {
@@ -150,10 +150,10 @@ public class SequenceAlignment {
             }
         }
         //search the matrix for the 2 largest scores, return them and the paths.
-        double best = 0;
+        int best = 0;
         int iBestCeller = 0;
         int jBestCeller = 0;
-        double secondBest = 0;
+        int secondBest = 0;
         int iSecondBestCeller = 0;
         int jSecondBestCeller = 0;
         for(int i = 1; i <= sequenceA.length(); i++) {
@@ -185,13 +185,7 @@ public class SequenceAlignment {
 //                System.out.print(M[t][k].getScore() + " ");
 //            }
 //        }
-//        System.out.println();
-//        for(int t = 0; t < M.length; t++){
-//            System.out.println();
-//            for(int k = 0; k < M[0].length; k++){
-//                System.out.print(M[t][k].getScore() + " ");
-//            }
-//        }
+
         System.out.println();
         //at least one of i,j should be not-zero otherwise M[0][0] =
         StringBuilder first = new StringBuilder();
