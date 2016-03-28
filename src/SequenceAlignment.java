@@ -175,9 +175,6 @@ public class SequenceAlignment {
     }
 
     private void findPath(int i, int j, cellMatrix[][] M, String sequenceA, String sequenceB) {
-        System.out.println(matrix.score('A','*'));
-        System.out.println(i);
-        System.out.println(j);
         for(int t = 0; t < M.length; t++){
             System.out.println();
             for(int k = 0; k < M[0].length; k++ ){
@@ -188,10 +185,13 @@ public class SequenceAlignment {
         //at least one of i,j should be not-zero otherwise M[0][0] =
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
+        boolean found;
         if(i != 0 && j != 0){
             //initialize last cell
             cellMatrix currCell = M[i][j];
             while(currCell != null){
+                found = false;
+                System.out.println(i + " " + j + " " + M[i][j].getScore());
                 //where did i came from?
                 if(i > 0 && j > 0) {
                     //replace
@@ -200,22 +200,25 @@ public class SequenceAlignment {
                         second.append(sequenceB.charAt(j - 1));
                         i--;
                         j--;
+                        found = true;
                     }
                 }
-                if(i > 0) {
+                if(i > 0 && !found) {
                     //delete
                     if (M[i][j].getScore() == (M[i - 1][j].getScore() + matrix.score(sequenceA.charAt(i - 1), '*'))) {
                         first.append(sequenceA.charAt(i - 1));
                         second.append("_");
                         i--;
+                        found = true;
                     }
                 }
-                if(j > 0) {
+                if(j > 0 && !found) {
                     //insert
                     {
                         first.append("_");
                         second.append(sequenceB.charAt(j - 1));
                         j--;
+                        found = true;
                     }
                 }
                 currCell = currCell.getPI();
