@@ -179,13 +179,19 @@ public class SequenceAlignment {
     }
 
     private void findPath(int i, int j, cellMatrix[][] M, String sequenceA, String sequenceB) {
+//        for(int t = 0; t < M.length; t++){
+//            System.out.println();
+//            for(int k = 0; k < M[0].length; k++){
+//                System.out.print(M[t][k].getScore() + " ");
+//            }
+//        }
+//        System.out.println();
         //at least one of i,j should be not-zero otherwise M[0][0] =
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
         boolean found;
         if(i != 0 && j != 0){
             //initialize last cell
-            System.out.println(i+" "+j+" "+ sequenceA.length()+" "+sequenceB.length());
             cellMatrix currCell = M[i][j];
             while(currCell != null){
                 found = false;
@@ -220,6 +226,8 @@ public class SequenceAlignment {
                 }
                 currCell = currCell.getPI();
             }
+            first.deleteCharAt(first.length()-1);
+            second.deleteCharAt(second.length()-1);
             System.out.println(first.reverse());
             System.out.println(second.reverse());
         }
