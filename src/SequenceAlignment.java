@@ -78,7 +78,7 @@ public class SequenceAlignment {
             M[0][j].setScore(0);
 
         //mainloop:
-        //full matrix with scores and pies
+        //full the matrix with scores and pies
         for (int i = 1; i <= sequenceA.length(); i++) {
             for (int j = 1; j <= sequenceB.length(); j++) {
                     double maxScore = M[i - 1][j - 1].getScore() + matrix.score(sequenceA.charAt(i - 1), sequenceB.charAt(j - 1));
@@ -98,17 +98,17 @@ public class SequenceAlignment {
             }
         }
         //get the end of path cell
-        double maxScore = 0;
+        double maxScore = M[sequenceA.length()][sequenceB.length()].getScore();
 
         for (int i = 1; i <= sequenceA.length(); i++)
-            if (M[i][sequenceA.length()].getScore() >= maxScore){
-                maxScore = i;
+            if (M[i][sequenceB.length()].getScore() >= maxScore){
+                maxScore = M[i][sequenceB.length()].getScore();
                 maxi = i;
                 maxj = sequenceB.length();
             }
         for (int j = 1; j <= sequenceB.length(); j++)
             if (M[sequenceA.length()][j].getScore() >= maxScore){
-                maxScore = j;
+                maxScore = M[sequenceA.length()][j].getScore();
                 maxi = sequenceA.length();
                 maxj = j;
             }
@@ -179,13 +179,19 @@ public class SequenceAlignment {
     }
 
     private void findPath(int i, int j, cellMatrix[][] M, String sequenceA, String sequenceB) {
+//        for(int t = 0; t < M.length; t++){
+//            System.out.println();
+//            for(int k = 0; k < M[0].length; k++){
+//                System.out.print(M[t][k].getScore() + " ");
+//            }
+//        }
+        System.out.println();
         //at least one of i,j should be not-zero otherwise M[0][0] =
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
         boolean found;
         if(i != 0 && j != 0){
             //initialize last cell
-            System.out.println(i+" "+j+" "+ sequenceA.length()+" "+sequenceB.length());
             cellMatrix currCell = M[i][j];
             while(currCell != null){
                 found = false;
