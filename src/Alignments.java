@@ -1,6 +1,5 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -11,12 +10,15 @@ public class Alignments {
     {
         //parse score matrix and fasta files
         SequenceAlignment seq = new SequenceAlignment(args[1],args[2],args[3]);
+        System.out.println(seq.a + " " + seq.b);
+        //seq.gapGlobalAlignment("AAAAAAAAAAAAAAAAAAAATTTTTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","AAAAAAAAAAAAAAAAAAAAGGGGGGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         String timeStamp = new SimpleDateFormat("mm.ss").format(new Date());
-
+        ArrayList<String> alignmentsMade = new ArrayList<>();
         //compute all-against-all alignment according to the flag
         for(String sequenceA : seq.sequences1.keySet()){
             for(String sequenceB : seq.sequences2.keySet()){
-                if (sequenceA.compareTo(sequenceB) != 0) {
+                if (sequenceA.compareTo(sequenceB) != 0 && !alignmentsMade.contains(sequenceA + "vs." + sequenceB)) {
+                    alignmentsMade.add(sequenceB + "vs." + sequenceA);
                     System.out.println(sequenceA);
                     System.out.println(sequenceB);
                     switch (args[0]) {

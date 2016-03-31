@@ -246,80 +246,174 @@ public class SequenceAlignment {
     }
     public void gapGlobalAlignment(String sequenceA, String sequenceB) {
         //MAX VALUE MATRIX
-        cellMatrix[][] V = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
+        cellMatrix[][] M = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
         //init new cells in matrix M
         for (int i = 0; i <= sequenceA.length(); i++)
             for (int j = 0; j <= sequenceB.length(); j++)
-                V[i][j] = new cellMatrix();
+                M[i][j] = new cellMatrix();
         //INSERSION MATRIX
-        cellMatrix[][] F = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
+        cellMatrix[][] IS = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
         //init new cells in matrix S
         for (int i = 0; i <= sequenceA.length(); i++)
             for (int j = 0; j <= sequenceB.length(); j++)
-                F[i][j] = new cellMatrix();
+                IS[i][j] = new cellMatrix();
         //DELETION MATRIX
-        cellMatrix[][] E = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
+        cellMatrix[][] IT = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
         //init new cells in matrix T
         for (int i = 0; i <= sequenceA.length(); i++)
             for (int j = 0; j <= sequenceB.length(); j++)
-                E[i][j] = new cellMatrix();
-        //MATCH REPLACE MATRIX
-        cellMatrix[][] G = new cellMatrix[sequenceA.length() + 1][sequenceB.length() + 1];
-        //init new cells in matrix V
-        for (int i = 0; i <= sequenceA.length(); i++)
-            for (int j = 0; j <= sequenceB.length(); j++)
-                G[i][j] = new cellMatrix();
-        //initialize F[0][i] = E[i][0] = -a
-        for(int i = 1; i <= sequenceA.length(); i++)
-            E[i][0].setScore(-a);
-        for(int i = 1; i <= sequenceB.length(); i++)
-            F[0][i].setScore(-a);
-
+                IT[i][j] = new cellMatrix();
         //mainloop: full all matrixes
         int max;
-        for(int i = 1; i <= sequenceA.length(); i++)
-            for(int j = 1; j <= sequenceB.length(); j++){
-                max = V[i-1][j-1].getScore() + matrix.score(sequenceA.charAt(i-1), sequenceB.charAt(j-1));
-                //G[i][j].setScore(max);
-                V[i][j].setScore(max);
-                V[i][j].setPi(V[i-1][j-1]);
+        for (int i = 1; i <= sequenceA.length(); i++)
+            for (int j = 1; j <= sequenceB.length(); j++) {
+                // find max M
+                max = M[i - 1][j - 1].getScore();
+                M[i][j].setScore(max);
+                M[i][j].setPi(M[i - 1][j - 1]);
 
-                E[i][j].setScore(Math.max(E[i][j-1].getScore(), V[i][j-1].getScore()-a)-b);
-                if (E[i][j].getScore() > max){
-                    max = E[i][j].getScore();
-                    V[i][j].setScore(max);
-                    V[i][j].setPi(V[i][j-1]);
+                if (IS[i - 1][j - 1].getScore() > max) {
+                    max = IS[i - 1][j - 1].getScore();
+                    M[i][j].setScore(max);
+                    M[i][j].setPi(IS[i - 1][j - 1]);
                 }
+                if (IT[i - 1][j - 1].getScore() > max) {
+                    max = IT[i - 1][j - 1].getScore();
+                    M[i][j].setScore(max);
+                    M[i][j].setPi(IT[i - 1][j - 1]);
+                }
+                M[i][j].setScore(max + matrix.score(sequenceA.charAt(i - 1), sequenceB.charAt(j - 1)));
 
-                F[i][j].setScore(Math.max(F[i-1][j].getScore(), V[i-1][j].getScore()-a)-b);
-                if (F[i][j].getScore() > max){
-                    max = F[i][j].getScore();
-                    V[i][j].setScore(max);
-                    V[i][j].setPi(V[i-1][j]);
+                //find max IS
+                max = IS[i - 1][j].getScore() - b;
+                IS[i][j].setScore(max);
+                IS[i][j].setPi(IS[i - 1][j]);
+
+                if ((IT[i - 1][j].getScore() - a) > max) {
+                    max = IT[i - 1][j - 1].getScore() - a;
+                    IS[i][j].setScore(max);
+                    IS[i][j].setPi(IT[i - 1][j]);
+                }
+                if ((M[i - 1][j].getScore() - a) > max) {
+                    max = M[i - 1][j].getScore() - a;
+                    IS[i][j].setScore(max);
+                    IS[i][j].setPi(M[i - 1][j]);
+                }
+                //find max IT
+                max = IT[i][j - 1].getScore() - b;
+                IT[i][j].setScore(max);
+                IT[i][j].setPi(IS[i - 1][j]);
+
+                if ((IS[i][j - 1].getScore() - a) > max) {
+                    max = IS[i][j - 1].getScore() - a;
+                    IT[i][j].setScore(max);
+                    IT[i][j].setPi(IS[i][j - 1]);
+                }
+                if ((M[i][j - 1].getScore() - a) > max) {
+                    max = M[i][j - 1].getScore() - a;
+                    IT[i][j].setScore(max);
+                    IT[i][j].setPi(M[i][j - 1]);
                 }
             }
-
         //get the end of path cell
-        int maxScore = V[sequenceA.length()][sequenceB.length()].getScore();
+        int maxScore = M[sequenceA.length()][sequenceB.length()].getScore();
         int maxi = sequenceA.length();
         int maxj = sequenceB.length();
 
-        for (int i = 1; i <= sequenceA.length(); i++)
-            if (V[i][sequenceB.length()].getScore() >= maxScore){
-                maxScore = V[i][sequenceB.length()].getScore();
+        for (int i = 1; i <= sequenceA.length(); i++) {
+            if (M[i][sequenceB.length()].getScore() >= maxScore) {
+                maxScore = M[i][sequenceB.length()].getScore();
                 maxi = i;
                 maxj = sequenceB.length();
             }
-        for (int j = 1; j <= sequenceB.length(); j++)
-            if (V[sequenceA.length()][j].getScore() >= maxScore){
-                maxScore = V[sequenceA.length()][j].getScore();
+            if (IS[i][sequenceB.length()].getScore() >= maxScore) {
+                maxScore = IS[i][sequenceB.length()].getScore();
+                maxi = i;
+                maxj = sequenceB.length();
+            }
+            if (IT[i][sequenceB.length()].getScore() >= maxScore) {
+                maxScore = IT[i][sequenceB.length()].getScore();
+                maxi = i;
+                maxj = sequenceB.length();
+            }
+        }
+        for (int j = 1; j <= sequenceB.length(); j++){
+            if (M[sequenceA.length()][j].getScore() >= maxScore) {
+                maxScore = M[sequenceA.length()][j].getScore();
                 maxi = sequenceA.length();
                 maxj = j;
             }
-
-        // get best score path
-        findPath(maxi, maxj, V, sequenceA, sequenceB);
-
-
+            if (IS[sequenceA.length()][j].getScore() >= maxScore) {
+                maxScore = IS[sequenceA.length()][j].getScore();
+                maxi = sequenceA.length();
+                maxj = j;
+            }
+            if (IT[sequenceA.length()][j].getScore() >= maxScore) {
+                maxScore = IT[sequenceA.length()][j].getScore();
+                maxi = sequenceA.length();
+                maxj = j;
+            }
+        }
+        findAffinePath(maxi,maxj,M,IS,IT,sequenceA,sequenceB);
+    }
+    private void findAffinePath(int i, int j, cellMatrix[][] M, cellMatrix[][] IS, cellMatrix[][] IT, String sequenceA, String sequenceB) {
+        int score = M[i][j].getScore();
+        cellMatrix currCell = M[i][j];
+        if(IS[i][j].getScore() > score){
+            currCell = IS[i][j];
+        }
+        if(IT[i][j].getScore() > score){
+            currCell = IT[i][j];
+        }
+//        for(int t = 0; t < M.length; t++){
+//            System.out.println();
+//            for(int k = 0; k < M[0].length; k++){
+//                System.out.print(M[t][k].getScore() + "  ");
+//            }
+//        }
+//
+//        System.out.println();
+        //at least one of i,j should be not-zero otherwise M[0][0] =
+        StringBuilder first = new StringBuilder();
+        StringBuilder second = new StringBuilder();
+        boolean found;
+        if(i != 0 && j != 0){
+            //initialize last cell
+            while(currCell != null && i > 0 && j > 0) {
+                found = false;
+                //where did i came from?
+                //replace
+                if (currCell.getPI() == M[i - 1][j - 1] || currCell.getPI() == IS[i - 1][j - 1] || currCell.getPI() == IT[i - 1][j - 1]) {
+                    first.append(sequenceA.charAt(i - 1));
+                    second.append(sequenceB.charAt(j - 1));
+                    i--;
+                    j--;
+                    found = true;
+                }
+                if (!found) {
+                    //delete
+                    if (currCell.getPI() == M[i - 1][j] || currCell.getPI() == IS[i - 1][j] || currCell.getPI() == IT[i - 1][j]) {
+                        first.append(sequenceA.charAt(i - 1));
+                        second.append("_");
+                        i--;
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    //insert
+                    {
+                        if (currCell.getPI() == M[i][j - 1] || currCell.getPI() == IS[i][j - 1] || currCell.getPI() == IT[i][j - 1]) {
+                            first.append("_");
+                            second.append(sequenceB.charAt(j - 1));
+                            j--;
+                        }
+                    }
+                }
+                currCell = currCell.getPI();
+            }
+            System.out.println(first.reverse());
+            System.out.println(second.reverse());
+            System.out.println("Score: " + score);
+        }
     }
 }
