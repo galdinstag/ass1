@@ -357,6 +357,7 @@ public class SequenceAlignment {
         findAffinePath(maxi,maxj,M,IS,IT,sequenceA,sequenceB);
     }
     private void findAffinePath(int i, int j, cellMatrix[][] M, cellMatrix[][] IS, cellMatrix[][] IT, String sequenceA, String sequenceB) {
+        //find out were to start
         int score = M[i][j].getScore();
         cellMatrix currCell = M[i][j];
         if(IS[i][j].getScore() > score){
@@ -365,20 +366,11 @@ public class SequenceAlignment {
         if(IT[i][j].getScore() > score){
             currCell = IT[i][j];
         }
-//        for(int t = 0; t < M.length; t++){
-//            System.out.println();
-//            for(int k = 0; k < M[0].length; k++){
-//                System.out.print(M[t][k].getScore() + "  ");
-//            }
-//        }
-//
-//        System.out.println();
-        //at least one of i,j should be not-zero otherwise M[0][0] =
+        //at least one of i,j should be not-zero.
         StringBuilder first = new StringBuilder();
         StringBuilder second = new StringBuilder();
         boolean found;
         if(i != 0 && j != 0){
-            //initialize last cell
             while(currCell != null && i > 0 && j > 0) {
                 found = false;
                 //where did i came from?

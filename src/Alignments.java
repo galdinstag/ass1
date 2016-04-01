@@ -11,7 +11,6 @@ public class Alignments {
         //parse score matrix and fasta files
         SequenceAlignment seq = new SequenceAlignment(args[1],args[2],args[3]);
         System.out.println(seq.a + " " + seq.b);
-        //seq.gapGlobalAlignment("AAAAAAAAAAAAAAAAAAAATTTTTTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA","AAAAAAAAAAAAAAAAAAAAGGGGGGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         String timeStamp = new SimpleDateFormat("mm.ss").format(new Date());
         ArrayList<String> alignmentsMade = new ArrayList<>();
         //compute all-against-all alignment according to the flag
